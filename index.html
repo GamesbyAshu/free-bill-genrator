@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>BillBook — GST Invoice &amp; Quotation Generator</title>
+<meta name="description" content="Offline GST invoice and quotation generator for Indian shopkeepers">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%232E5E63%22/><text x=%2250%22 y=%2266%22 font-size=%2050%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Georgia%22>₹</text></svg>">
+
+<!-- Google Fonts: Lora for document/ledger feel, Inter for UI -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<!-- jsPDF + html2canvas (loaded from CDN; app still works offline for everything except first load of these libs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ============== TOP APP BAR ============== -->
+<header class="app-bar">
+  <div class="app-bar__brand">
+    <span class="app-bar__mark">₹</span>
+    <div>
+      <h1 class="app-bar__title">BillBook</h1>
+      <p class="app-bar__subtitle">GST Invoice &amp; Quotation Generator</p>
+    </div>
+  </div>
+  <div class="app-bar__actions">
+    <button class="icon-btn" id="btnNewInvoice" title="New invoice" aria-label="New invoice">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSettings" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V19a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 17.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 13a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 7a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 2.6a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 7a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSavedInvoices" title="Saved invoices" aria-label="Saved invoices">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============== MOBILE TAB NAV ============== -->
+<nav class="tab-nav" id="tabNav" aria-label="Sections">
+  <button class="tab-nav__btn is-active" data-tab="business">Business</button>
+  <button class="tab-nav__btn" data-tab="customer">Customer</button>
+  <button class="tab-nav__btn" data-tab="items">Items</button>
+  <button class="tab-nav__btn" data-tab="charges">Charges</button>
+  <button class="tab-nav__btn" data-tab="preview">Preview</button>
+</nav>
+
+<!-- ============== MAIN LAYOUT ============== -->
+<main class="layout">
+
+  <!-- ---------- FORM COLUMN ---------- -->
+  <section class="form-col">
+
+    <!-- ===== BUSINESS / SELLER PANEL ===== -->
+    <section class="panel" data-panel="business">
+      <div class="panel__head">
+        <h2>Your Business</h2>
+        <span class="panel__hint">Saved permanently on this device</span>
+      </div>
+
+      <div class="logo-row">
+        <div class="logo-upload" id="logoPreviewWrap">
+          <img id="logoPreview" alt="Business logo" hidden>
+          <span id="logoPlaceholder" class="logo-upload__placeholder">LOGO</span>
+        </div>
+        <div class="logo-upload__actions">
+          <label class="btn btn--ghost btn--sm" for="logoInput">Upload logo</label>
+          <input type="file" id="logoInput" accept="image/*" hidden>
+          <button class="btn btn--text btn--sm" id="btnRemoveLogo" type="button">Remove</button>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Shop Name</span>
+          <input type="text" id="bizShopName" placeholder="e.g. Sharma General Store">
+        </label>
+        <label class="field">
+          <span>Business / Legal Name</span>
+          <input type="text" id="bizLegalName" placeholder="e.g. Sharma Traders Pvt. Ltd.">
+        </label>
+        <label class="field">
+          <span>GSTIN</span>
+          <input type="text" id="bizGST" placeholder="22AAAAA0000A1Z5" maxlength="15" autocapitalize="characters">
+        </label>
+        <label class="field">
+          <span>Phone Number</span>
+          <input type="tel" id="bizPhone" placeholder="98765 43210">
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="bizEmail" placeholder="shop@example.com">
+        </label>
+        <label class="field">
+          <span>Website</span>
+          <input type="text" id="bizWebsite" placeholder="www.example.com">
+        </label>
+        <label class="field field--full">
+          <span>Address</span>
+          <textarea id="bizAddress" rows="2" placeholder="Shop No., Street, City, State, PIN"></textarea>
+        </label>
+      </div>
+
+      <h3 class="panel__subhead">Bank Details</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Bank Name</span>
+          <input type="text" id="bankName" placeholder="State Bank of India">
+        </label>
+        <label class="field">
+          <span>Account Number</span>
+          <input type="text" id="bankAccount" placeholder="000000000000" inputmode="numeric">
+        </label>
+        <label class="field">
+          <span>IFSC Code</span>
+          <input type="text" id="bankIFSC" placeholder="SBIN0000000" autocapitalize="characters">
+        </label>
+        <label class="field">
+          <span>Branch</span>
+          <input type="text" id="bankBranch" placeholder="Main Branch, City">
+        </label>
+      </div>
+
+      <h3 class="panel__subhead">Signature</h3>
+      <div class="logo-row">
+        <div class="logo-upload logo-upload--sig" id="sigPreviewWrap">
+          <img id="sigPreview" alt="Authorized signature" hidden>
+          <span id="sigPlaceholder" class="logo-upload__placeholder">SIGN</span>
+        </div>
+        <div class="logo-upload__actions">
+          <label class="btn btn--ghost btn--sm" for="sigInput">Upload signature</label>
+          <input type="file" id="sigInput" accept="image/*" hidden>
+          <button class="btn btn--text btn--sm" id="btnRemoveSig" type="button">Remove</button>
+        </div>
+      </div>
+
+      <button class="btn btn--primary btn--block" id="btnSaveBusiness" type="button">Save Business Profile</button>
+    </section>
+
+    <!-- ===== CUSTOMER PANEL ===== -->
+    <section class="panel is-hidden" data-panel="customer">
+      <div class="panel__head">
+        <h2>Bill To (Customer)</h2>
+        <span class="panel__hint">Pick a saved customer or add new</span>
+      </div>
+
+      <label class="field field--full">
+        <span>Select Saved Customer</span>
+        <select id="customerSelect">
+          <option value="">— New customer —</option>
+        </select>
+      </label>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Customer Name</span>
+          <input type="text" id="custName" placeholder="Customer / company name">
+        </label>
+        <label class="field">
+          <span>Customer ID</span>
+          <input type="text" id="custId" placeholder="Auto or custom ID">
+        </label>
+        <label class="field">
+          <span>Phone</span>
+          <input type="tel" id="custPhone" placeholder="98765 43210">
+        </label>
+        <label class="field">
+          <span>GST Number</span>
+          <input type="text" id="custGST" placeholder="Customer's GSTIN (if any)" autocapitalize="characters">
+        </label>
+        <label class="field">
+          <span>PIN Code</span>
+          <input type="text" id="custPin" placeholder="226001" inputmode="numeric" maxlength="6">
+        </label>
+        <label class="field field--full">
+          <span>Address</span>
+          <textarea id="custAddress" rows="2" placeholder="Delivery / billing address"></textarea>
+        </label>
+      </div>
+
+      <button class="btn btn--secondary btn--block" id="btnSaveCustomer" type="button">Save to Customer Library</button>
+
+      <h3 class="panel__subhead">Invoice Details</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Document Type</span>
+          <select id="docType">
+            <option value="invoice">Tax Invoice</option>
+            <option value="quotation">Quotation</option>
+          </select>
+        </label>
+        <label class="field">
+          <span id="docNumberLabel">Invoice Number</span>
+          <input type="text" id="docNumber" placeholder="INV-0001">
+        </label>
+        <label class="field">
+          <span>Date</span>
+          <input type="date" id="docDate">
+        </label>
+        <label class="field">
+          <span>Due Date</span>
+          <input type="date" id="docDueDate">
+        </label>
+        <label class="field">
+          <span>Place of Supply</span>
+          <input type="text" id="placeOfSupply" placeholder="e.g. Uttar Pradesh (09)">
+        </label>
+        <label class="field">
+          <span>GST Mode</span>
+          <select id="gstMode">
+            <option value="exclusive">Exclusive (add GST to price)</option>
+            <option value="inclusive">Inclusive (price includes GST)</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <!-- ===== ITEMS PANEL ===== -->
+    <section class="panel is-hidden" data-panel="items">
+      <div class="panel__head">
+        <h2>Products / Services</h2>
+        <span class="panel__hint" id="gstModeHint">Exclusive GST mode</span>
+      </div>
+
+      <div class="product-search">
+        <label class="field field--full">
+          <span>Quick-add from Product Library</span>
+          <input type="text" id="productSearch" placeholder="Type to search saved products…" autocomplete="off">
+        </label>
+        <div class="product-search__results" id="productSearchResults" hidden></div>
+      </div>
+
+      <div id="itemsList" class="items-list"><!-- item rows injected by JS --></div>
+
+      <button class="btn btn--ghost btn--block" id="btnAddItem" type="button">+ Add Product</button>
+
+      <h3 class="panel__subhead">Discount</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Discount Type</span>
+          <select id="discountType">
+            <option value="amount">Flat Amount (₹)</option>
+            <option value="percent">Percent (%)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Discount Value</span>
+          <input type="number" id="discountValue" min="0" step="0.01" placeholder="0" inputmode="decimal">
+        </label>
+      </div>
+    </section>
+
+    <!-- ===== CHARGES & TERMS PANEL ===== -->
+    <section class="panel is-hidden" data-panel="charges">
+      <div class="panel__head">
+        <h2>Other Charges</h2>
+        <span class="panel__hint">Transport, packing, labour, etc.</span>
+      </div>
+
+      <div id="chargesList" class="charges-list"><!-- charge rows injected by JS --></div>
+      <button class="btn btn--ghost btn--block" id="btnAddCharge" type="button">+ Add Charge</button>
+
+      <h3 class="panel__subhead">Terms &amp; Conditions</h3>
+      <label class="field field--full">
+        <span>Shown at the bottom of the invoice</span>
+        <textarea id="termsText" rows="5" placeholder="1. Goods once sold will not be taken back.&#10;2. Payment due within 15 days.&#10;3. Subject to local jurisdiction."></textarea>
+      </label>
+
+      <label class="field field--full">
+        <span>Notes (internal — not printed)</span>
+        <textarea id="internalNotes" rows="2" placeholder="Optional notes for your own reference"></textarea>
+      </label>
+    </section>
+
+    <!-- ===== PREVIEW PANEL (mobile shows here, desktop shows in side column) ===== -->
+    <section class="panel is-hidden panel--preview-mobile" data-panel="preview">
+      <div class="panel__head">
+        <h2>Live Preview</h2>
+        <span class="panel__hint">Updates as you type</span>
+      </div>
+      <div class="invoice-scroll" id="invoiceScrollMobile"><!-- invoice cloned here on mobile tab --></div>
+    </section>
+
+  </section>
+
+  <!-- ---------- PREVIEW COLUMN (desktop) ---------- -->
+  <aside class="preview-col">
+    <div class="preview-col__sticky">
+      <div class="preview-col__head">
+        <h2>Live Preview</h2>
+        <span class="muted">A4 layout</span>
+      </div>
+      <div class="invoice-scroll" id="invoiceScrollDesktop"><!-- invoice rendered here -->
+        <div id="invoiceRoot" class="invoice"><!-- INVOICE TEMPLATE INJECTED BY JS --></div>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- ============== STICKY BOTTOM ACTION BAR ============== -->
+<nav class="action-bar" aria-label="Invoice actions">
+  <button class="action-bar__btn" id="btnSave">
+    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+    <span>Save</span>
+  </button>
+  <button class="action-bar__btn" id="btnPreviewTab">
+    <svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+    <span>Preview</span>
+  </button>
+  <button class="action-bar__btn action-bar__btn--primary" id="btnDownloadPDF">
+    <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg>
+    <span>PDF</span>
+  </button>
+  <button class="action-bar__btn" id="btnPrint">
+    <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg>
+    <span>Print</span>
+  </button>
+</nav>
+
+<!-- ============== SAVED INVOICES DRAWER ============== -->
+<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+<div class="drawer" id="savedDrawer" hidden>
+  <div class="drawer__head">
+    <h2>Saved Invoices</h2>
+    <button class="icon-btn" id="btnCloseSavedDrawer" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <label class="field field--full drawer__search">
+    <span>Search</span>
+    <input type="text" id="savedSearch" placeholder="Search by number or customer…">
+  </label>
+  <div class="saved-list" id="savedList"><!-- rendered by JS --></div>
+</div>
+
+<!-- ============== SETTINGS DRAWER ============== -->
+<div class="drawer-backdrop" id="settingsBackdrop" hidden></div>
+<div class="drawer" id="settingsDrawer" hidden>
+  <div class="drawer__head">
+    <h2>Settings</h2>
+    <button class="icon-btn" id="btnCloseSettingsDrawer" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer__body">
+    <h3 class="panel__subhead" style="margin-top:0">Numbering</h3>
+    <div class="field-grid">
+      <label class="field">
+        <span>Invoice Prefix</span>
+        <input type="text" id="settingInvoicePrefix" placeholder="INV-">
+      </label>
+      <label class="field">
+        <span>Next Invoice No.</span>
+        <input type="number" id="settingInvoiceNext" min="1" inputmode="numeric">
+      </label>
+      <label class="field">
+        <span>Quotation Prefix</span>
+        <input type="text" id="settingQuotePrefix" placeholder="QTN-">
+      </label>
+      <label class="field">
+        <span>Next Quotation No.</span>
+        <input type="number" id="settingQuoteNext" min="1" inputmode="numeric">
+      </label>
+    </div>
+
+    <h3 class="panel__subhead">Product Library</h3>
+    <div id="productLibraryList" class="library-list"></div>
+    <button class="btn btn--ghost btn--block" id="btnAddLibraryProduct" type="button">+ Add Product to Library</button>
+
+    <h3 class="panel__subhead">Customer Library</h3>
+    <div id="customerLibraryList" class="library-list"></div>
+
+    <h3 class="panel__subhead">Data</h3>
+    <button class="btn btn--secondary btn--block" id="btnExportData" type="button">Export All Data (JSON)</button>
+    <label class="btn btn--ghost btn--block" for="importDataInput">Import Data (JSON)</label>
+    <input type="file" id="importDataInput" accept="application/json" hidden>
+    <button class="btn btn--danger btn--block" id="btnClearAllData" type="button">Erase All Local Data</button>
+  </div>
+</div>
+
+<!-- Toast for quick feedback -->
+<div class="toast" id="toast" hidden></div>
+
+<script src="script.js"></script>
+</body>
+</html>
