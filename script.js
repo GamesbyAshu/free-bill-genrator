@@ -382,9 +382,7 @@ function renderItems() {
         </label>
         <label class="field">
           <span>GST %</span>
-          <select data-field="gst" data-id="${item.id}">
-            ${GST_RATES.map(r => `<option value="${r}" ${Number(item.gst) === r ? 'selected' : ''}>${r}%</option>`).join('')}
-          </select>
+          <input type="number" min="0" max="100" step="0.01" inputmode="decimal" list="gstRateOptions" value="${item.gst}" data-field="gst" data-id="${item.id}">
         </label>
       </div>
       <div class="item-card__breakdown">${itemBreakdownHTML(calc)}</div>
@@ -1078,8 +1076,9 @@ function promptAddLibraryProduct() {
   const name = prompt('Product name:');
   if (!name) return;
   const price = parseFloat(prompt('Unit price (₹):', '0')) || 0;
-  const gstInput = prompt('GST % (0, 5, 12, 18, 28):', '18');
-  const gst = GST_RATES.includes(Number(gstInput)) ? Number(gstInput) : 18;
+  const gstInput = prompt('GST % (any value, e.g. 0, 5, 12, 18, 28, 3, 0.25…):', '18');
+  const parsedGst = parseFloat(gstInput);
+  const gst = (!isNaN(parsedGst) && parsedGst >= 0) ? parsedGst : 18;
   const hsn = prompt('HSN/SAC code (optional):', '') || '';
   saveProductToLibrary({ name, price, gst, hsn });
   showToast('Product added to library.');

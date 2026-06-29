@@ -340,6 +340,9 @@ svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; 
   animation: drawerUp .25s cubic-bezier(.22,.9,.3,1);
   overflow:hidden;
 }
+/* The [hidden] attribute must win over the class's own display:flex above —
+   same CSS specificity, so without this the drawer never actually hides. */
+.drawer[hidden]{ display:none; }
 @keyframes drawerUp{ from{ transform: translateY(100%); } to{ transform:none; } }
 @media (min-width:760px){
   .drawer{
