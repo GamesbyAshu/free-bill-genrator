@@ -1,5 +1,5 @@
 /* =========================================================
-   BillBook — script.js
+   Free Bill Generator — script.js (freebillgenerator.com)
    Offline GST Invoice / Quotation Generator
    Plain HTML/CSS/JS + LocalStorage + jsPDF + html2canvas
    ========================================================= */
@@ -637,7 +637,7 @@ function buildInvoiceHTML() {
         <div class="sig-label">Authorized Signatory</div>
       </div>
     </div>
-    <div class="invoice__bottom-strip">Generated with BillBook — Total Quantity: ${totals.totalQty} | Thank you for your business</div>
+    <div class="invoice__bottom-strip">Generated with Free Bill Generator (freebillgenerator.com) — Total Quantity: ${totals.totalQty} | Thank you for your business</div>
   `;
 
   return `

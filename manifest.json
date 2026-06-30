@@ -1,0 +1,13 @@
+{
+  "name": "Free Bill Generator — GST Invoice & Quotation Maker",
+  "short_name": "Bill Generator",
+  "description": "Create professional GST invoices and quotations online for free.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F6F2",
+  "theme_color": "#2E5E63",
+  "icons": [
+    { "src": "favicon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "favicon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

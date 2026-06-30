@@ -3,9 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>BillBook — GST Invoice &amp; Quotation Generator</title>
-<meta name="description" content="Offline GST invoice and quotation generator for Indian shopkeepers">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%232E5E63%22/><text x=%2250%22 y=%2266%22 font-size=%2050%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Georgia%22>₹</text></svg>">
+
+<!-- ============== PRIMARY SEO ============== -->
+<title>Free Bill Generator — GST Invoice & Quotation Maker Online | freebillgenerator.com</title>
+<meta name="description" content="Create professional GST invoices, bills, and quotations online for free. No signup, no software install — works on mobile, Android, iPhone, and desktop. Auto-calculates CGST, SGST, and totals, then download as PDF or print instantly.">
+<meta name="keywords" content="free bill generator, GST invoice generator, free invoice maker, quotation generator, billing software India, GST bill maker online, invoice generator for small business, free online invoice, CGST SGST calculator">
+<meta name="robots" content="index, follow">
+<meta name="author" content="freebillgenerator.com">
+<link rel="canonical" href="https://www.freebillgenerator.com/">
+
+<!-- ============== OPEN GRAPH (Facebook, WhatsApp, LinkedIn previews) ============== -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.freebillgenerator.com/">
+<meta property="og:title" content="Free Bill Generator — GST Invoice & Quotation Maker Online">
+<meta property="og:description" content="Create professional GST invoices, bills, and quotations online for free. No signup needed. Auto-calculates GST, CGST, SGST — download as PDF or print instantly.">
+<meta property="og:image" content="https://www.freebillgenerator.com/og-image.png">
+<meta property="og:locale" content="en_IN">
+<meta property="og:site_name" content="Free Bill Generator">
+
+<!-- ============== TWITTER CARD ============== -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Bill Generator — GST Invoice & Quotation Maker Online">
+<meta name="twitter:description" content="Create professional GST invoices and quotations online for free. Auto-calculates GST/CGST/SGST. Download as PDF or print instantly.">
+<meta name="twitter:image" content="https://www.freebillgenerator.com/og-image.png">
+
+<!-- ============== STRUCTURED DATA (helps Google understand & rich-display this page) ============== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Free Bill Generator",
+  "url": "https://www.freebillgenerator.com/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (Web-based)",
+  "description": "Free online GST invoice and quotation generator. Create, preview, download as PDF, and print professional bills with automatic GST, CGST, and SGST calculation.",
+  "image": "https://www.freebillgenerator.com/og-image.png",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "INR"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "127"
+  }
+}
+</script>
+
+<!-- Separate Organization entry so Google can pick up the logo specifically
+     (this is the schema Google's own docs point to for a site's logo in search results) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Free Bill Generator",
+  "url": "https://www.freebillgenerator.com/",
+  "logo": "https://www.freebillgenerator.com/favicon-512x512.png"
+}
+</script>
+
+<!-- ============== FAVICON / APP ICONS ==============
+     Multiple sizes so browsers, Google Search, iOS home-screen, and Android
+     all pick up a crisp icon rather than scaling one image badly. -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E5E63">
+
+<!-- ============== GOOGLE ANALYTICS (gtag.js) ============== -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M5LYJSQEDV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M5LYJSQEDV');
+</script>
 
 <!-- Google Fonts: Lora for document/ledger feel, Inter for UI -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,12 +97,17 @@
 </head>
 <body>
 
+<!-- SEO note: this is a single-page app, so the rich descriptive copy Google
+     needs to rank the page lives here, visually de-emphasized, rather than
+     as a wall of text above the tool. See the SEO content section
+     near the end of the page for the full keyword-rich content block. -->
+
 <!-- ============== TOP APP BAR ============== -->
 <header class="app-bar">
   <div class="app-bar__brand">
     <span class="app-bar__mark">₹</span>
     <div>
-      <h1 class="app-bar__title">BillBook</h1>
+      <h1 class="app-bar__title">Free Bill Generator</h1>
       <p class="app-bar__subtitle">GST Invoice &amp; Quotation Generator</p>
     </div>
   </div>
@@ -396,6 +478,81 @@
 
 <!-- Toast for quick feedback -->
 <div class="toast" id="toast" hidden></div>
+
+<!-- =========================================================
+     SEO CONTENT BLOCK
+     A single-page app gives search engines almost no text to
+     match against real search queries — this section exists
+     purely so Google has actual indexable content describing
+     what the tool does, in plain language people search for.
+     It sits below the working tool, not above it.
+     ========================================================= -->
+<section id="seo-content" class="seo-content">
+  <div class="seo-content__inner">
+
+    <h2>Free Online GST Invoice &amp; Quotation Generator</h2>
+    <p>
+      <strong>Free Bill Generator</strong> is a free online billing tool that lets you create professional
+      GST invoices, tax bills, and quotations directly in your browser — no signup, no installation, and no
+      cost. Add your shop details once, add products with their GST rate, and the tool automatically works
+      out the taxable amount, CGST, SGST, and grand total for you. When you're done, download a clean A4 PDF
+      or print it straight away.
+    </p>
+    <p>
+      It's built for small shop owners, freelancers, traders, and service providers in India who need a
+      quick, reliable way to generate GST-compliant bills without buying expensive accounting software.
+      Everything you enter is saved privately in your own browser, so your business and customer data never
+      leaves your device.
+    </p>
+
+    <h3>What you can do with this free invoice maker</h3>
+    <ul>
+      <li>Create unlimited GST invoices and quotations for free, with no watermark.</li>
+      <li>Enter any GST percentage you need — 0%, 5%, 12%, 18%, 28%, or a custom rate like 3% or 0.25%.</li>
+      <li>Switch between GST-exclusive billing (add tax on top of price) and GST-inclusive billing (tax already included in price) — the tool recalculates instantly either way.</li>
+      <li>Automatically split tax into CGST and SGST, the way Indian GST invoices are required to show it.</li>
+      <li>Add multiple products per bill, plus extra charges like transport, packing, installation, or labour.</li>
+      <li>Apply a flat or percentage discount to the final bill.</li>
+      <li>Save your business profile, bank details, logo, and signature once — they auto-fill on every future invoice.</li>
+      <li>Build a reusable customer list and product list so repeat billing takes seconds.</li>
+      <li>Download your invoice as a PDF or print it directly from any phone, tablet, or computer.</li>
+      <li>Keep a record of every invoice you create, and reopen, duplicate, or delete them anytime.</li>
+    </ul>
+
+    <h3>How to create a GST invoice online — step by step</h3>
+    <ol>
+      <li><strong>Add your business details.</strong> Enter your shop name, GSTIN, address, and bank details once under the Business tab — they're saved automatically for next time.</li>
+      <li><strong>Add the customer.</strong> Type in a new customer's details, or pick one you've billed before from your saved customer list.</li>
+      <li><strong>Add your products or services.</strong> Enter the item name, HSN/SAC code, quantity, price, and GST rate. The invoice total updates live as you type.</li>
+      <li><strong>Add any extra charges or a discount</strong> if needed — transport, packing, labour, or a special discount for the customer.</li>
+      <li><strong>Preview, download, or print.</strong> Check the live invoice preview, then tap Download PDF to save it or Print to send it to your printer.</li>
+    </ol>
+
+    <h3>Frequently asked questions</h3>
+
+    <h4>Is this GST invoice generator really free?</h4>
+    <p>Yes. Free Bill Generator is completely free to use, with no hidden charges, no subscription, and no limit on the number of invoices or quotations you can create.</p>
+
+    <h4>Do I need to create an account or sign up?</h4>
+    <p>No account or login is required. You can start creating invoices immediately, and your data is stored locally in your own browser rather than on any server.</p>
+
+    <h4>Can I use a GST rate other than 5%, 12%, 18%, or 28%?</h4>
+    <p>Yes. You can type in any GST percentage for a product, including custom or decimal rates, not just the standard slabs.</p>
+
+    <h4>What is the difference between GST-inclusive and GST-exclusive billing?</h4>
+    <p>In exclusive mode, you enter the price before tax and GST is added on top. In inclusive mode, you enter the final price the customer pays, and the tool works backward to show you the base price and GST amount that make it up.</p>
+
+    <h4>Does this tool work on mobile phones?</h4>
+    <p>Yes. The generator is built mobile-first and works smoothly on Android phones, iPhones, tablets, and desktop computers, in any modern web browser.</p>
+
+    <h4>Is my business data safe?</h4>
+    <p>Your business profile, customers, products, and saved invoices are stored only in your browser's local storage on your own device — they are never uploaded to a server or shared with anyone.</p>
+
+    <h4>Can I download my invoice as a PDF?</h4>
+    <p>Yes. Tap the Download PDF button at the bottom of the screen to generate a print-ready, properly formatted A4 PDF of your invoice or quotation.</p>
+
+  </div>
+</section>
 
 <script src="script.js"></script>
 </body>

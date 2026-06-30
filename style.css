@@ -1,5 +1,5 @@
 /* =========================================================
-   BillBook — GST Invoice Generator
+   Free Bill Generator (freebillgenerator.com)
    Design tokens
    ========================================================= */
 :root{
@@ -528,4 +528,49 @@ svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; 
   }
   .app-bar, .tab-nav, .action-bar, .drawer, .drawer-backdrop, .toast{ display:none !important; }
   @page{ size:A4; margin:0; }
+}
+
+/* =========================================================
+   SEO CONTENT BLOCK
+   Sits below the working tool. Styled to feel like part of the
+   site (not a bolted-on wall of text) but visually de-emphasized
+   compared to the app itself, since that's the actual product.
+   ========================================================= */
+.seo-content{
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  padding: 36px 16px calc(var(--bar-height) + 40px);
+  margin-top: 8px;
+}
+.seo-content__inner{
+  max-width: 760px;
+  margin: 0 auto;
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.seo-content__inner h2{
+  font-family: var(--font-doc);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.seo-content__inner h3{
+  font-size: 16px;
+  color: var(--accent-dark);
+  margin: 28px 0 10px;
+}
+.seo-content__inner h4{
+  font-size: 14.5px;
+  color: var(--ink);
+  margin: 18px 0 4px;
+  font-weight: 700;
+}
+.seo-content__inner p{ margin: 0 0 12px; }
+.seo-content__inner ul, .seo-content__inner ol{ margin: 0 0 12px; padding-left: 20px; }
+.seo-content__inner li{ margin-bottom: 6px; }
+.seo-content__inner strong{ color: var(--ink); }
+
+@media print{
+  .seo-content{ display:none !important; }
 }
